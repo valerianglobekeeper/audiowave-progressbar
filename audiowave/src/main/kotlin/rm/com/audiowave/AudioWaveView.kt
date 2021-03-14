@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.OvershootInterpolator
@@ -145,12 +146,12 @@ class AudioWaveView : View {
 
     cv.transform {
       clipRect(0, 0, w, h)
-      drawBitmap(waveBitmap, 0F, 0F, wavePaint)
+      drawBitmap(waveBitmap!!, 0F, 0F, wavePaint)
     }
 
     cv.transform {
       clipRect(0F, 0F, w * progressFactor, h.toFloat())
-      drawBitmap(waveBitmap, 0F, 0F, waveFilledPaint)
+      drawBitmap(waveBitmap!!, 0F, 0F, waveFilledPaint)
     }
   }
 
@@ -221,6 +222,11 @@ class AudioWaveView : View {
 
   @JvmOverloads
   fun setRawData(raw: ByteArray, callback: () -> Unit = {}) {
+    var increase = 1
+    if (chunksCount == 0) {
+      increase = 5
+    }
+    Log.e("chunksCount", "$chunksCount")
     MAIN_THREAD.postDelayed({
       Sampler.downSampleAsync(raw, chunksCount) {
         scaledData = it
@@ -230,7 +236,7 @@ class AudioWaveView : View {
           animateExpansion()
         }
       }
-    }, initialDelay)
+    }, initialDelay * increase)
   }
 
   private fun MotionEvent.toProgress() = this@toProgress.x.clamp(0F, w.toFloat()) / w * 100F

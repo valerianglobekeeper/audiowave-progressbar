@@ -3,8 +3,6 @@ package rm.com.audiogram;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import java.util.Random;
 import rm.com.audiowave.AudioWaveView;
 import rm.com.audiowave.OnProgressListener;
@@ -12,12 +10,9 @@ import rm.com.audiowave.OnSamplingListener;
 
 public final class AnotherActivity extends Activity {
 
-  @BindView(R.id.wave) AudioWaveView waveView;
-
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_another);
-    ButterKnife.bind(this);
 
     final Random random = new Random();
     final byte[] data = new byte[1024 * 200];
@@ -26,6 +21,7 @@ public final class AnotherActivity extends Activity {
     // if the data is downsampled already use setScaledData
     // waveView.setScaledData(data);
 
+    AudioWaveView waveView = findViewById(R.id.wave);
     // if the data is a raw big byte array, you can use setRawData
     waveView.setRawData(data, new OnSamplingListener() {
       @Override public void onComplete() {
